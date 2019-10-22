@@ -549,25 +549,8 @@ ModelImporter::importModel(::ONNX_NAMESPACE::ModelProto const &model,
     ::ONNX_NAMESPACE::NodeProto const& node = graph.node(node_idx);
     std::vector<TensorOrWeights> inputs;
     for( auto const& input_name : node.input() ) {
-      ///////////////////////////////////
-      ASSERT(tensors.count(input_name) || initializer_map.count(input_name), ErrorCode::kINVALID_GRAPH);
-      if(tensors.count(input_name) == 0)
-      {
-        TensorOrWeights tensor;
-        ::ONNX_NAMESPACE::TensorProto const& initializer = *initializer_map.at(input_name);
-        ShapedWeights weights;
-        ASSERT_INPUT(convert_onnx_weights(initializer, &weights), ErrorCode::kUNSUPPORTED_NODE, input_name);
-        tensor = weights;
-        inputs.push_back(tensor);
-        tensors.insert({input_name, tensor});
-      }
-      else
-      {
-        inputs.push_back(tensors.at(input_name));
-      }
-      ///////////////////////////////////
-//      ASSERT(tensors.count(input_name), ErrorCode::kINVALID_GRAPH);
-//      inputs.push_back(tensors.at(input_name));
+      ASSERT(tensors.count(input_name), ErrorCode::kINVALID_GRAPH);
+      inputs.push_back(tensors.at(input_name));
     }
     std::vector<TensorOrWeights> outputs;
     GET_VALUE(this->importNode(node, inputs, output_names), &outputs);

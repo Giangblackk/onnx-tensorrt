@@ -396,6 +396,7 @@ inline Status convert_axis(int& axis, int nbDims)
   {
     axis = axis - 1;
   }
+  std::cout << "axis" << axis << "nbDims" << nbDims << std::endl;
   ASSERT(axis >= 0 && axis < nbDims, ErrorCode::kUNSUPPORTED_NODE);
   return Status::success();
 }

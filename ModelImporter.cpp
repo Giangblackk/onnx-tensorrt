@@ -540,8 +540,9 @@ ModelImporter::importModel(::ONNX_NAMESPACE::ModelProto const &model,
   }
 
   string_map<TensorOrWeights> tensors;
+  string_map<::ONNX_NAMESPACE::TensorProto const *> initializer_map;
   TRT_CHECK(importInputs(&_importer_ctx, graph, &tensors, weight_count,
-                         weight_descriptors));
+                         weight_descriptors, initializer_map));
   std::vector<size_t> topological_order;
   ASSERT(toposort(graph.node(), &topological_order), ErrorCode::kINVALID_GRAPH);
   for( size_t node_idx : topological_order ) {

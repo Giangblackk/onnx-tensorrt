@@ -1561,6 +1561,14 @@ DEFINE_BUILTIN_OP_IMPORTER(Reshape) {
   int infer_dim = -1;
   if( input.is_weights() ) {
     auto weights = input.weights();
+    nvinfer1::Dims input_shape = weights.shape;
+    for (int i=0; i < new_shape.nbDims; ++i)
+      {
+        if (new_shape.d[i] == 0)
+          {
+            new_shape.d[i] = input_shape.d[i];
+          }
+      }
     TRT_CHECK(get_infer_dim(infer_dim,new_shape));
     if (infer_dim >= 0)
     {
@@ -1576,6 +1584,14 @@ DEFINE_BUILTIN_OP_IMPORTER(Reshape) {
   else {
     new_shape = set_dims_CHW(remove_dim(new_shape, BATCH_DIM));
     nvinfer1::ITensor& tensor = input.tensor();
+    nvinfer1::Dims input_shape = tensor.getDimensions();
+    for (int i=0; i < new_shape.nbDims; ++i)
+    {
+      if (new_shape.d[i] == 0)
+      {
+        new_shape.d[i] = input_shape.d[i];
+      }
+    }
     TRT_CHECK(get_infer_dim(infer_dim,new_shape));
     if (infer_dim >= 0)
     {
